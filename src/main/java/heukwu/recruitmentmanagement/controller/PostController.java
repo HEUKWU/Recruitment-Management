@@ -4,10 +4,7 @@ import heukwu.recruitmentmanagement.dto.PostDto;
 import heukwu.recruitmentmanagement.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,5 +17,12 @@ public class PostController {
         postService.createPost(companyId, requestDto);
 
         return ResponseEntity.ok("성공");
+    }
+
+    @PutMapping("/post/editing/{postId}")
+    public ResponseEntity<PostDto.Res> editPost(@PathVariable Long postId, @RequestBody PostDto.Req editDto) {
+        PostDto.Res response = postService.editPost(postId, editDto);
+
+        return ResponseEntity.ok(response);
     }
 }

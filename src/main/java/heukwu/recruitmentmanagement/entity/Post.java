@@ -48,4 +48,12 @@ public class Post {
                 .description(requestDto.getDescription())
                 .build();
     }
+
+    public Post edit(PostDto.Req editDto) {
+        this.position = editDto.getPosition();
+        this.skill = editDto.getSkill();
+        this.description = editDto.getDescription();
+
+        return this;
+    }
 }
