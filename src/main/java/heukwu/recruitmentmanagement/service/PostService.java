@@ -29,4 +29,9 @@ public class PostService {
 
         return PostDto.Res.of(post);
     }
+
+    public void deletePost(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
+        postRepository.delete(post);
+    }
 }

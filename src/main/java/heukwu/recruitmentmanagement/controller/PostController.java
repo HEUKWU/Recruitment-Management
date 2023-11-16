@@ -25,4 +25,11 @@ public class PostController {
 
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/post/deleting/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
+
+        return ResponseEntity.ok("삭제 성공");
+    }
 }
