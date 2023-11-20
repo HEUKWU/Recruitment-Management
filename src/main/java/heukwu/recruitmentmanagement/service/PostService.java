@@ -50,6 +50,6 @@ public class PostService {
     public PostDto.Res getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
 
-        return PostDto.Res.of(post);
+        return PostDto.Res.getDetailPost(post);
     }
 }

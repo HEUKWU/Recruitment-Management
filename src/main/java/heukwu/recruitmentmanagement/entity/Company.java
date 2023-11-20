@@ -1,10 +1,12 @@
 package heukwu.recruitmentmanagement.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.util.List;
 
 @Entity
+@Getter
 public class Company {
 
     @Id
