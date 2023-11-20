@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -27,11 +30,20 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
         Post editPost = post.edit(editDto);
 
-        return PostDto.Res.of(post);
+        return PostDto.Res.of(editPost);
     }
 
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
         postRepository.delete(post);
+    }
+
+    public List<PostDto.Res> getAllPost() {
+        List<Post> postList = postRepository.findAll();
+
+        List<PostDto.Res> postDtoList = new ArrayList<>();
+        postList.forEach(post -> postDtoList.add(PostDto.Res.of(post)));
+
+        return postDtoList;
     }
 }

@@ -1,10 +1,13 @@
 package heukwu.recruitmentmanagement.controller;
 
 import heukwu.recruitmentmanagement.dto.PostDto;
+import heukwu.recruitmentmanagement.entity.Post;
 import heukwu.recruitmentmanagement.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,4 +35,12 @@ public class PostController {
 
         return ResponseEntity.ok("삭제 성공");
     }
+
+    @GetMapping("/post")
+    public ResponseEntity<List<PostDto.Res>> getAllPost() {
+        List<PostDto.Res> allPost = postService.getAllPost();
+
+        return ResponseEntity.ok(allPost);
+    }
+
 }
