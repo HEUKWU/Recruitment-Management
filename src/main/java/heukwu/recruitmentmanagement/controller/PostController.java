@@ -1,7 +1,6 @@
 package heukwu.recruitmentmanagement.controller;
 
 import heukwu.recruitmentmanagement.dto.PostDto;
-import heukwu.recruitmentmanagement.entity.Post;
 import heukwu.recruitmentmanagement.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,4 +42,10 @@ public class PostController {
         return ResponseEntity.ok(allPost);
     }
 
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<PostDto.Res> getPost(@PathVariable Long postId) {
+        PostDto.Res post = postService.getPost(postId);
+
+        return ResponseEntity.ok(post);
+    }
 }
