@@ -14,6 +14,8 @@ public class PostDto {
 
     @Getter
     @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
     public static class Req {
         private String position;
         private String skill;
