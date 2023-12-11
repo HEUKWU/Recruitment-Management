@@ -19,10 +19,12 @@ public class PostService {
     private final PostRepository postRepository;
     private final CompanyRepository companyRepository;
 
-    public void createPost(Long companyId, PostDto.Req requestDto) {
+    public PostDto.Res createPost(Long companyId, PostDto.Req requestDto) {
         Company company = companyRepository.findById(companyId).orElseThrow(IllegalArgumentException::new);
         Post post = Post.of(company, requestDto);
         postRepository.save(post);
+
+        return PostDto.Res.of(post);
     }
 
     @Transactional

@@ -5,54 +5,72 @@ import heukwu.recruitmentmanagement.entity.Company;
 import heukwu.recruitmentmanagement.entity.Post;
 import heukwu.recruitmentmanagement.repository.CompanyRepository;
 import heukwu.recruitmentmanagement.repository.PostRepository;
+import heukwu.recruitmentmanagement.service.PostService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.TestPropertySource;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import java.util.Optional;
 
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2, replace = Replace.ANY)
-@TestPropertySource("classpath:application-test.properties")
-@DataJpaTest
-class PostRepositoryTest {
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-    @Autowired
-    PostRepository postRepository;
+@ExtendWith(MockitoExtension.class)
+public class PostServiceTest {
 
-    @Autowired
+    @Mock
     CompanyRepository companyRepository;
 
-    Company company;
+    @Mock
+    PostRepository postRepository;
+
+    @InjectMocks
+    PostService postService;
+
+    private Company naver;
+    private Company kakao;
+    private Company line;
 
     @BeforeEach
-    void before() {
-        Company companyOf = Company.builder()
+    void setUp() {
+        naver = Company.builder()
                 .id(1L)
-                .country("한국")
-                .companyName("네이버")
-                .location("판교")
+                .companyName("NAVER")
                 .build();
 
-        company = companyRepository.save(companyOf);
+        kakao = Company.builder()
+                .id(1L)
+                .companyName("KAKAO")
+                .build();
+
+        line = Company.builder()
+                .id(1L)
+                .companyName("LINE")
+                .build();
     }
 
     @Test
-    void test() {
-        PostDto.Req requestDto = PostDto.Req.builder()
-                .skill("java")
-                .position("backend")
-                .description("hi")
+    void createPostTest() {
+
+        //given
+        when(companyRepository.findById(line.getId())).thenReturn(Optional.of(naver));
+        when(postRepository.save(any(Post.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        //when
+        PostDto.Req dto = PostDto.Req.builder()
+                .position("Back End")
+                .skill("Spring")
+                .description("Java Spring Back End")
                 .build();
 
-        Post post = Post.of(new Company(), requestDto);
+        PostDto.Res post = postService.createPost(1L, dto);
 
-        Post savePost = postRepository.save(post);
-
-        assertThat(post.getId()).isEqualTo(savePost.getId());
+        //then
+        assertThat(post.getSkill()).isEqualTo(dto.getSkill());
     }
 }
