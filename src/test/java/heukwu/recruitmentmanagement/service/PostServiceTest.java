@@ -5,8 +5,6 @@ import heukwu.recruitmentmanagement.entity.Company;
 import heukwu.recruitmentmanagement.entity.Post;
 import heukwu.recruitmentmanagement.repository.CompanyRepository;
 import heukwu.recruitmentmanagement.repository.PostRepository;
-import heukwu.recruitmentmanagement.service.PostService;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
