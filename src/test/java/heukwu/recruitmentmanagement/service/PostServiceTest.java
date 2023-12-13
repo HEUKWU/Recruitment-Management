@@ -22,13 +22,13 @@ import static org.mockito.Mockito.when;
 public class PostServiceTest {
 
     @Mock
-    CompanyRepository companyRepository;
+    private CompanyRepository companyRepository;
 
     @Mock
-    PostRepository postRepository;
+    private PostRepository postRepository;
 
     @InjectMocks
-    PostService postService;
+    private PostService postService;
 
     private Company naver;
     private Company kakao;
@@ -42,12 +42,12 @@ public class PostServiceTest {
                 .build();
 
         kakao = Company.builder()
-                .id(1L)
+                .id(2L)
                 .companyName("KAKAO")
                 .build();
 
         line = Company.builder()
-                .id(1L)
+                .id(3L)
                 .companyName("LINE")
                 .build();
     }
