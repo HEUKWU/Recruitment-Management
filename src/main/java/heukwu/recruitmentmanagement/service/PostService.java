@@ -19,6 +19,21 @@ public class PostService {
     private final PostRepository postRepository;
     private final CompanyRepository companyRepository;
 
+    public List<PostDto.Res> getAllPost() {
+        List<Post> postList = postRepository.findAll();
+
+        List<PostDto.Res> postDtoList = new ArrayList<>();
+        postList.forEach(post -> postDtoList.add(PostDto.Res.of(post)));
+
+        return postDtoList;
+    }
+
+    public PostDto.Res getPost(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
+
+        return PostDto.Res.getDetailPost(post);
+    }
+
     public PostDto.Res createPost(Long companyId, PostDto.Req requestDto) {
         Company company = companyRepository.findById(companyId).orElseThrow(IllegalArgumentException::new);
         Post post = Post.of(company, requestDto);
@@ -38,20 +53,5 @@ public class PostService {
     public void deletePost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
         postRepository.delete(post);
-    }
-
-    public List<PostDto.Res> getAllPost() {
-        List<Post> postList = postRepository.findAll();
-
-        List<PostDto.Res> postDtoList = new ArrayList<>();
-        postList.forEach(post -> postDtoList.add(PostDto.Res.of(post)));
-
-        return postDtoList;
-    }
-
-    public PostDto.Res getPost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
-
-        return PostDto.Res.getDetailPost(post);
     }
 }
