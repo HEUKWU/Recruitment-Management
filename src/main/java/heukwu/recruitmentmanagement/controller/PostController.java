@@ -24,10 +24,8 @@ public class PostController {
     }
 
     @DeleteMapping("/post/deleting/{postId}")
-    public String deletePost(@PathVariable Long postId) {
+    public void deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
-
-        return "삭제 성공";
     }
 
     @GetMapping("/post")
