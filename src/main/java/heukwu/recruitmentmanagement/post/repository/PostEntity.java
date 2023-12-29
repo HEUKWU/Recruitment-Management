@@ -49,10 +49,10 @@ public class PostEntity {
         this.company = company;
     }
 
-    public PostEntity edit(String position, String skill, String description) {
-        this.position = position;
-        this.skill = skill;
-        this.description = description;
+    public PostEntity edit(PostEntityUpdatePolicy updatePolicy) {
+        this.position = updatePolicy.position();
+        this.skill = updatePolicy.skill();
+        this.description = updatePolicy.description();
 
         return this;
     }

@@ -3,6 +3,7 @@ package heukwu.recruitmentmanagement.post.service;
 import heukwu.recruitmentmanagement.company.repository.Company;
 import heukwu.recruitmentmanagement.company.repository.CompanyRepository;
 import heukwu.recruitmentmanagement.post.repository.PostEntity;
+import heukwu.recruitmentmanagement.post.repository.PostEntityUpdatePolicy;
 import heukwu.recruitmentmanagement.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,12 @@ public class PostService {
     @Transactional
     public Post editPost(Long postId, Post post) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
-        PostEntity editPostEntity = postEntity.edit(post.position(), post.skill(), post.description());
+        PostEntityUpdatePolicy updatePolicy = PostEntityUpdatePolicy.builder()
+                .position(post.position())
+                .skill(post.skill())
+                .description(post.description())
+                .build();
+        PostEntity editPostEntity = postEntity.edit(updatePolicy);
 
         return Post.from(editPostEntity);
     }
