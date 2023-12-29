@@ -3,6 +3,7 @@ package heukwu.recruitmentmanagement.post.controller;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import heukwu.recruitmentmanagement.post.service.Post;
 import heukwu.recruitmentmanagement.post.service.PostDto;
+import heukwu.recruitmentmanagement.post.service.PostWithOtherPosts;
 import lombok.Builder;
 
 import java.util.List;
@@ -61,18 +62,36 @@ class PostResponse {
             String companyName,
             String position,
             String skill,
-            @JsonInclude(JsonInclude.Include.NON_NULL)
             String description,
-            @JsonInclude(JsonInclude.Include.NON_NULL)
-            List<Long> postList
+            List<Long> otherPostIds
     ) {
-        static Get from(Post post) {
+        static Get from(PostWithOtherPosts post) {
+            List<Long> otherPostIds = post.otherPosts().stream().map(Post::id).toList();
+
             return Get.builder()
                     .id(post.id())
                     .companyName(post.company().getCompanyName())
                     .position(post.position())
                     .skill(post.skill())
                     .description(post.description())
+                    .otherPostIds(otherPostIds)
+                    .build();
+        }
+    }
+
+    @Builder
+    record GetList(
+            Long id,
+            String companyName,
+            String position,
+            String skill
+    ) {
+        static GetList from(Post post) {
+            return GetList.builder()
+                    .id(post.id())
+                    .companyName(post.company().getCompanyName())
+                    .position(post.position())
+                    .skill(post.skill())
                     .build();
         }
     }

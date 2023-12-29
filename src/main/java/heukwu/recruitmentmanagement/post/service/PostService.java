@@ -26,10 +26,10 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public PostDto.Res getPost(Long postId) {
+    public PostWithOtherPosts getPost(Long postId) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
 
-        return PostDto.Res.getDetailPost(postEntity);
+        return PostWithOtherPosts.from(postEntity);
     }
 
     public PostDto.Res createPost(Long companyId, PostDto.Req requestDto) {

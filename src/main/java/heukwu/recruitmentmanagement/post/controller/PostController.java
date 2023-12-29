@@ -3,6 +3,7 @@ package heukwu.recruitmentmanagement.post.controller;
 import heukwu.recruitmentmanagement.post.service.Post;
 import heukwu.recruitmentmanagement.post.service.PostDto;
 import heukwu.recruitmentmanagement.post.service.PostService;
+import heukwu.recruitmentmanagement.post.service.PostWithOtherPosts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,19 +17,19 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/post")
-    public List<PostResponse.Get> getAllPost() {
+    public List<PostResponse.GetList> getAllPost() {
         List<Post> postList = postService.getAllPost();
 
         return postList.stream()
-                .map(PostResponse.Get::from)
+                .map(PostResponse.GetList::from)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/post/{postId}")
     public PostResponse.Get getPost(@PathVariable Long postId) {
-        PostDto.Res dto = postService.getPost(postId);
+        PostWithOtherPosts post = postService.getPost(postId);
 
-        return PostResponse.Get.from(dto);
+        return PostResponse.Get.from(post);
     }
 
     @PostMapping("/post/{companyId}")
