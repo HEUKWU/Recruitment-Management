@@ -1,6 +1,6 @@
 package heukwu.recruitmentmanagement.company.repository;
 
-import heukwu.recruitmentmanagement.post.repository.Post;
+import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,5 +30,5 @@ public class Company {
     private String location;
 
     @OneToMany(mappedBy = "company")
-    private List<Post> postList;
+    private List<PostEntity> postEntityList;
 }

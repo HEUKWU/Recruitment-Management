@@ -17,7 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @SQLDelete(sql = "UPDATE post SET deleted=true WHERE id = ?")
 @Where(clause = "deleted = false")
-public class Post {
+@Table(name = "post")
+public class PostEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +42,7 @@ public class Post {
     private List<Apply> applyList;
 
     @Builder
-    public Post(Long id, String position, String skill, String description, Company company) {
+    public PostEntity(Long id, String position, String skill, String description, Company company) {
         this.id = id;
         this.position = position;
         this.skill = skill;
@@ -49,8 +50,8 @@ public class Post {
         this.company = company;
     }
 
-    public static Post of(Company company, PostDto.Req requestDto) {
-        return Post.builder()
+    public static PostEntity of(Company company, PostDto.Req requestDto) {
+        return PostEntity.builder()
                 .company(company)
                 .position(requestDto.getPosition())
                 .skill(requestDto.getSkill())
@@ -58,7 +59,7 @@ public class Post {
                 .build();
     }
 
-    public Post edit(PostDto.Req editDto) {
+    public PostEntity edit(PostDto.Req editDto) {
         this.position = editDto.getPosition();
         this.skill = editDto.getSkill();
         this.description = editDto.getDescription();

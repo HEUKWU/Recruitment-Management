@@ -1,15 +1,15 @@
 package heukwu.recruitmentmanagement.post.service;
 
 import heukwu.recruitmentmanagement.company.repository.Company;
-import heukwu.recruitmentmanagement.post.repository.Post;
 import heukwu.recruitmentmanagement.company.repository.CompanyRepository;
+import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import heukwu.recruitmentmanagement.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,39 +18,38 @@ public class PostService {
     private final PostRepository postRepository;
     private final CompanyRepository companyRepository;
 
-    public List<PostDto.Res> getAllPost() {
-        List<Post> postList = postRepository.findAll();
+    public List<Post> getAllPost() {
+        List<PostEntity> postEntityList = postRepository.findAll();
 
-        List<PostDto.Res> postDtoList = new ArrayList<>();
-        postList.forEach(post -> postDtoList.add(PostDto.Res.of(post)));
-
-        return postDtoList;
+        return postEntityList.stream()
+                .map(Post::from)
+                .collect(Collectors.toList());
     }
 
     public PostDto.Res getPost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
+        PostEntity postEntity = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
 
-        return PostDto.Res.getDetailPost(post);
+        return PostDto.Res.getDetailPost(postEntity);
     }
 
     public PostDto.Res createPost(Long companyId, PostDto.Req requestDto) {
         Company company = companyRepository.findById(companyId).orElseThrow(IllegalArgumentException::new);
-        Post post = Post.of(company, requestDto);
-        postRepository.save(post);
+        PostEntity postEntity = PostEntity.of(company, requestDto);
+        postRepository.save(postEntity);
 
-        return PostDto.Res.of(post);
+        return PostDto.Res.of(postEntity);
     }
 
     @Transactional
     public PostDto.Res editPost(Long postId, PostDto.Req editDto) {
-        Post post = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
-        Post editPost = post.edit(editDto);
+        PostEntity postEntity = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
+        PostEntity editPostEntity = postEntity.edit(editDto);
 
-        return PostDto.Res.of(editPost);
+        return PostDto.Res.of(editPostEntity);
     }
 
     public void deletePost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
-        postRepository.delete(post);
+        PostEntity postEntity = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
+        postRepository.delete(postEntity);
     }
 }

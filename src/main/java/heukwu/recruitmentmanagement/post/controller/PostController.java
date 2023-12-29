@@ -1,5 +1,6 @@
 package heukwu.recruitmentmanagement.post.controller;
 
+import heukwu.recruitmentmanagement.post.service.Post;
 import heukwu.recruitmentmanagement.post.service.PostDto;
 import heukwu.recruitmentmanagement.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class PostController {
 
     @GetMapping("/post")
     public List<PostResponse.Get> getAllPost() {
-        List<PostDto.Res> postList = postService.getAllPost();
+        List<Post> postList = postService.getAllPost();
 
         return postList.stream()
                 .map(PostResponse.Get::from)

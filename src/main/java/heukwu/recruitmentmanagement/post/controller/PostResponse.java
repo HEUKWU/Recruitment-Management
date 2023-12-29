@@ -1,6 +1,7 @@
 package heukwu.recruitmentmanagement.post.controller;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import heukwu.recruitmentmanagement.post.service.Post;
 import heukwu.recruitmentmanagement.post.service.PostDto;
 import lombok.Builder;
 
@@ -65,14 +66,13 @@ class PostResponse {
             @JsonInclude(JsonInclude.Include.NON_NULL)
             List<Long> postList
     ) {
-        static Get from(PostDto.Res dto) {
+        static Get from(Post post) {
             return Get.builder()
-                    .id(dto.getId())
-                    .companyName(dto.getCompanyName())
-                    .position(dto.getPosition())
-                    .skill(dto.getSkill())
-                    .description(dto.getDescription())
-                    .postList(dto.getPostList())
+                    .id(post.id())
+                    .companyName(post.company().getCompanyName())
+                    .position(post.position())
+                    .skill(post.skill())
+                    .description(post.description())
                     .build();
         }
     }

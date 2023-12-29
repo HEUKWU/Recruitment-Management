@@ -1,10 +1,8 @@
 package heukwu.recruitmentmanagement.post.service;
 
-import heukwu.recruitmentmanagement.post.service.PostDto;
 import heukwu.recruitmentmanagement.company.repository.Company;
-import heukwu.recruitmentmanagement.post.repository.Post;
-import heukwu.recruitmentmanagement.post.service.PostService;
 import heukwu.recruitmentmanagement.company.repository.CompanyRepository;
+import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import heukwu.recruitmentmanagement.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PostServiceTest {
+public class PostEntityServiceTest {
 
     @Mock
     private CompanyRepository companyRepository;
@@ -67,11 +65,11 @@ public class PostServiceTest {
                 .description("Java Spring Back End")
                 .build();
 
-        List<Post> posts = List.of(Post.of(naver, dto), Post.of(kakao, dto), Post.of(line, dto));
-        when(postRepository.findAll()).thenReturn(posts);
+        List<PostEntity> postEntities = List.of(PostEntity.of(naver, dto), PostEntity.of(kakao, dto), PostEntity.of(line, dto));
+        when(postRepository.findAll()).thenReturn(postEntities);
 
         //when
-        List<PostDto.Res> allPost = postService.getAllPost();
+        List<Post> allPost = postService.getAllPost();
 
         //then
         assertThat(allPost.size()).isEqualTo(3);
@@ -82,27 +80,27 @@ public class PostServiceTest {
     void getPostTest() {
 
         //given
-        Post post1 = Post.builder()
+        PostEntity postEntity1 = PostEntity.builder()
                 .id(1L)
                 .company(naver)
                 .build();
 
-        Post post2 = Post.builder()
+        PostEntity postEntity2 = PostEntity.builder()
                 .id(2L)
                 .company(naver)
                 .build();
 
-        Post post3 = Post.builder()
+        PostEntity postEntity3 = PostEntity.builder()
                 .id(3L)
                 .company(naver)
                 .build();
 
         Company company = Company.builder()
                 .companyName("naver")
-                .postList(List.of(post1, post2, post3))
+                .postEntityList(List.of(postEntity1, postEntity2, postEntity3))
                 .build();
 
-        when(postRepository.findById(1L)).thenReturn(Optional.of(Post.builder().id(1L).company(company).build()));
+        when(postRepository.findById(1L)).thenReturn(Optional.of(PostEntity.builder().id(1L).company(company).build()));
 
         //when
         PostDto.Res post = postService.getPost(1L);
@@ -128,7 +126,7 @@ public class PostServiceTest {
 
         //given
         when(companyRepository.findById(naver.getId())).thenReturn(Optional.of(naver));
-        when(postRepository.save(any(Post.class))).thenAnswer(i -> i.getArguments()[0]);
+        when(postRepository.save(any(PostEntity.class))).thenAnswer(i -> i.getArguments()[0]);
 
         //when
         PostDto.Req dto = PostDto.Req.builder()

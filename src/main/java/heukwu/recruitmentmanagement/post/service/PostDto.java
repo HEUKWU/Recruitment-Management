@@ -1,6 +1,6 @@
 package heukwu.recruitmentmanagement.post.service;
 
-import heukwu.recruitmentmanagement.post.repository.Post;
+import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,27 +34,27 @@ public class PostDto {
 
         private List<Long> postList;
 
-        public static Res of(Post post) {
+        public static Res of(PostEntity postEntity) {
             return Res.builder()
-                    .id(post.getId())
-                    .companyName(post.getCompany().getCompanyName())
-                    .position(post.getPosition())
-                    .skill(post.getSkill())
+                    .id(postEntity.getId())
+                    .companyName(postEntity.getCompany().getCompanyName())
+                    .position(postEntity.getPosition())
+                    .skill(postEntity.getSkill())
                     .build();
         }
 
-        public static Res getDetailPost(Post post) {
-            List<Long> postIdList = post.getCompany().getPostList().stream()
-                    .map(Post::getId)
-                    .filter(id -> !id.equals(post.getId()))
+        public static Res getDetailPost(PostEntity postEntity) {
+            List<Long> postIdList = postEntity.getCompany().getPostEntityList().stream()
+                    .map(PostEntity::getId)
+                    .filter(id -> !id.equals(postEntity.getId()))
                     .collect(Collectors.toList());
 
             return Res.builder()
-                    .id(post.getId())
-                    .companyName(post.getCompany().getCompanyName())
-                    .position(post.getPosition())
-                    .skill(post.getSkill())
-                    .description(post.getDescription())
+                    .id(postEntity.getId())
+                    .companyName(postEntity.getCompany().getCompanyName())
+                    .position(postEntity.getPosition())
+                    .skill(postEntity.getSkill())
+                    .description(postEntity.getDescription())
                     .postList(postIdList)
                     .build();
         }
