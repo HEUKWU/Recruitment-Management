@@ -39,7 +39,8 @@ public class Post {
     private List<Apply> applyList;
 
     @Builder
-    public Post(String position, String skill, String description, Company company) {
+    public Post(Long id, String position, String skill, String description, Company company) {
+        this.id = id;
         this.position = position;
         this.skill = skill;
         this.description = description;

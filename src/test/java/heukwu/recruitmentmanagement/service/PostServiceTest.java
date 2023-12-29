@@ -6,53 +6,156 @@ import heukwu.recruitmentmanagement.entity.Post;
 import heukwu.recruitmentmanagement.repository.CompanyRepository;
 import heukwu.recruitmentmanagement.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.TestPropertySource;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2, replace = Replace.ANY)
-@TestPropertySource("classpath:application-test.properties")
-@DataJpaTest
-class PostRepositoryTest {
+@ExtendWith(MockitoExtension.class)
+public class PostServiceTest {
 
-    @Autowired
-    PostRepository postRepository;
+    @Mock
+    private CompanyRepository companyRepository;
 
-    @Autowired
-    CompanyRepository companyRepository;
+    @Mock
+    private PostRepository postRepository;
 
-    Company company;
+    @InjectMocks
+    private PostService postService;
+
+    private Company naver;
+    private Company kakao;
+    private Company line;
 
     @BeforeEach
-    void before() {
-        Company companyOf = Company.builder()
+    void setUp() {
+        naver = Company.builder()
                 .id(1L)
-                .country("한국")
-                .companyName("네이버")
-                .location("판교")
+                .companyName("NAVER")
                 .build();
 
-        company = companyRepository.save(companyOf);
+        kakao = Company.builder()
+                .id(2L)
+                .companyName("KAKAO")
+                .build();
+
+        line = Company.builder()
+                .id(3L)
+                .companyName("LINE")
+                .build();
     }
 
     @Test
-    void test() {
-        PostDto.Req requestDto = PostDto.Req.builder()
-                .skill("java")
-                .position("backend")
-                .description("hi")
+    @DisplayName("게시글 전체조회시 응답된 리스트의 개수는 저장한 게시글의 개수와 같다.")
+    void getAllPostTest() {
+
+        //given
+        PostDto.Req dto = PostDto.Req.builder()
+                .position("Back End")
+                .skill("Spring")
+                .description("Java Spring Back End")
                 .build();
 
-        Post post = Post.of(new Company(), requestDto);
+        List<Post> posts = List.of(Post.of(naver, dto), Post.of(kakao, dto), Post.of(line, dto));
+        when(postRepository.findAll()).thenReturn(posts);
 
-        Post savePost = postRepository.save(post);
+        //when
+        List<PostDto.Res> allPost = postService.getAllPost();
 
-        assertThat(post.getId()).isEqualTo(savePost.getId());
+        //then
+        assertThat(allPost.size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("특정 게시글 조회시 게시글을 올린 회사의 다른 게시글의 아이디를 조회할 수 있다.")
+    void getPostTest() {
+
+        //given
+        Post post1 = Post.builder()
+                .id(1L)
+                .company(naver)
+                .build();
+
+        Post post2 = Post.builder()
+                .id(2L)
+                .company(naver)
+                .build();
+
+        Post post3 = Post.builder()
+                .id(3L)
+                .company(naver)
+                .build();
+
+        Company company = Company.builder()
+                .companyName("naver")
+                .postList(List.of(post1, post2, post3))
+                .build();
+
+        when(postRepository.findById(1L)).thenReturn(Optional.of(Post.builder().id(1L).company(company).build()));
+
+        //when
+        PostDto.Res post = postService.getPost(1L);
+
+        //then
+        assertThat(post.getPostList()).isEqualTo(List.of(2L, 3L));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시글의 id로 조회시 예외가 발생한다.")
+    void getPostNotExist() {
+
+        //given
+        when(postRepository.findById(1L)).thenReturn(Optional.empty());
+
+        //when, then
+        assertThatThrownBy(() -> postService.getPost(1L)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("올바른 회사id와 요청 dto로 게시글을 생성했을 때 생성하고 응답된 게시글의 skill 필드는 요청 dto의 skill 필드와 같다.")
+    void createPostTest() {
+
+        //given
+        when(companyRepository.findById(naver.getId())).thenReturn(Optional.of(naver));
+        when(postRepository.save(any(Post.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        //when
+        PostDto.Req dto = PostDto.Req.builder()
+                .position("Back End")
+                .skill("Spring")
+                .description("Java Spring Back End")
+                .build();
+
+        PostDto.Res post = postService.createPost(1L, dto);
+
+        //then
+        assertThat(post.getSkill()).isEqualTo(dto.getSkill());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회사id로 게시글을 생성했을 때 예외가 발생한다.")
+    void createPostNotExistCompany() {
+
+        //given
+        when(companyRepository.findById(4L)).thenReturn(Optional.empty());
+
+        //when, then
+        PostDto.Req dto = PostDto.Req.builder()
+                .position("Back End")
+                .skill("Spring")
+                .description("Java Spring Back End")
+                .build();
+
+        assertThatThrownBy(() -> postService.createPost(4L, dto)).isInstanceOf(IllegalArgumentException.class);
     }
 }

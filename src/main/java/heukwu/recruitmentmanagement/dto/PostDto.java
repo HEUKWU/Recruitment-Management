@@ -28,6 +28,7 @@ public class PostDto {
     @AllArgsConstructor
     public static class Res {
         private Long id;
+        private String companyName;
         private String position;
         private String skill;
         @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -39,6 +40,7 @@ public class PostDto {
         public static Res of(Post post) {
             return Res.builder()
                     .id(post.getId())
+                    .companyName(post.getCompany().getCompanyName())
                     .position(post.getPosition())
                     .skill(post.getSkill())
                     .build();
@@ -52,6 +54,7 @@ public class PostDto {
 
             return Res.builder()
                     .id(post.getId())
+                    .companyName(post.getCompany().getCompanyName())
                     .position(post.getPosition())
                     .skill(post.getSkill())
                     .description(post.getDescription())
