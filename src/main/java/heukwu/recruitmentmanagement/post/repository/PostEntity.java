@@ -2,7 +2,6 @@ package heukwu.recruitmentmanagement.post.repository;
 
 import heukwu.recruitmentmanagement.apply.repository.Apply;
 import heukwu.recruitmentmanagement.company.repository.Company;
-import heukwu.recruitmentmanagement.post.service.PostDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -50,10 +49,10 @@ public class PostEntity {
         this.company = company;
     }
 
-    public PostEntity edit(PostDto.Req editDto) {
-        this.position = editDto.getPosition();
-        this.skill = editDto.getSkill();
-        this.description = editDto.getDescription();
+    public PostEntity edit(String position, String skill, String description) {
+        this.position = position;
+        this.skill = skill;
+        this.description = description;
 
         return this;
     }

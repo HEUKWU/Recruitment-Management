@@ -1,7 +1,6 @@
 package heukwu.recruitmentmanagement.post.controller;
 
 import heukwu.recruitmentmanagement.post.service.Post;
-import heukwu.recruitmentmanagement.post.service.PostDto;
 import heukwu.recruitmentmanagement.post.service.PostService;
 import heukwu.recruitmentmanagement.post.service.PostWithOtherPosts;
 import lombok.RequiredArgsConstructor;
@@ -45,8 +44,8 @@ public class PostController {
 
     @PutMapping("/post/editing/{postId}")
     public PostResponse.Edit editPost(@PathVariable Long postId, @RequestBody PostRequest.Edit request) {
-        PostDto.Req requestDto = request.toDomain();
-        PostDto.Res responseDto = postService.editPost(postId, requestDto);
+        Post requestDto = request.toDomain();
+        Post responseDto = postService.editPost(postId, requestDto);
 
         return PostResponse.Edit.from(responseDto);
     }

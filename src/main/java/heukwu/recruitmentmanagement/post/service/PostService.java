@@ -41,11 +41,11 @@ public class PostService {
     }
 
     @Transactional
-    public PostDto.Res editPost(Long postId, PostDto.Req editDto) {
+    public Post editPost(Long postId, Post post) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
-        PostEntity editPostEntity = postEntity.edit(editDto);
+        PostEntity editPostEntity = postEntity.edit(post.position(), post.skill(), post.description());
 
-        return PostDto.Res.of(editPostEntity);
+        return Post.from(editPostEntity);
     }
 
     public void deletePost(Long postId) {
