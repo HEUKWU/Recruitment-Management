@@ -24,4 +24,13 @@ public record Post(
                 .company(postEntity.getCompany())
                 .build();
     }
+
+    public PostEntity toEntity(Company company) {
+        return PostEntity.builder()
+                .position(position)
+                .skill(skill)
+                .description(description)
+                .company(company)
+                .build();
+    }
 }

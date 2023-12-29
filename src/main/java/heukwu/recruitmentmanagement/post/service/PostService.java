@@ -32,12 +32,12 @@ public class PostService {
         return PostWithOtherPosts.from(postEntity);
     }
 
-    public PostDto.Res createPost(Long companyId, PostDto.Req requestDto) {
+    public Post createPost(Long companyId, Post post) {
         Company company = companyRepository.findById(companyId).orElseThrow(IllegalArgumentException::new);
-        PostEntity postEntity = PostEntity.of(company, requestDto);
+        PostEntity postEntity = post.toEntity(company);
         postRepository.save(postEntity);
 
-        return PostDto.Res.of(postEntity);
+        return Post.from(postEntity);
     }
 
     @Transactional

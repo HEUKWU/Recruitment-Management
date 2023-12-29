@@ -1,5 +1,6 @@
 package heukwu.recruitmentmanagement.post.controller;
 
+import heukwu.recruitmentmanagement.post.service.Post;
 import heukwu.recruitmentmanagement.post.service.PostDto;
 
 class PostRequest {
@@ -9,8 +10,8 @@ class PostRequest {
             String skill,
             String description
     ) {
-        PostDto.Req toDomain() {
-            return PostDto.Req.builder()
+        Post toDomain() {
+            return Post.builder()
                     .position(position)
                     .skill(skill)
                     .description(description)

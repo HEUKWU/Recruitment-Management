@@ -37,10 +37,10 @@ public class PostController {
             @PathVariable Long companyId,
             @RequestBody PostRequest.Create request
     ) {
-        PostDto.Req requestDto = request.toDomain();
-        PostDto.Res responseDto = postService.createPost(companyId, requestDto);
+        Post requestDto = request.toDomain();
+        Post createdPost = postService.createPost(companyId, requestDto);
 
-        return PostResponse.Create.from(responseDto);
+        return PostResponse.Create.from(createdPost);
     }
 
     @PutMapping("/post/editing/{postId}")

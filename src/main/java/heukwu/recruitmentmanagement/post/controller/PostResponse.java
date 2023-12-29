@@ -15,20 +15,14 @@ class PostResponse {
             Long id,
             String companyName,
             String position,
-            String skill,
-            @JsonInclude(JsonInclude.Include.NON_NULL)
-            String description,
-            @JsonInclude(JsonInclude.Include.NON_NULL)
-            List<Long> postList
+            String skill
     ) {
-        static Create from(PostDto.Res dto) {
+        static Create from(Post post) {
             return Create.builder()
-                    .id(dto.getId())
-                    .companyName(dto.getCompanyName())
-                    .position(dto.getPosition())
-                    .skill(dto.getSkill())
-                    .description(dto.getDescription())
-                    .postList(dto.getPostList())
+                    .id(post.id())
+                    .companyName(post.company().getCompanyName())
+                    .position(post.position())
+                    .skill(post.skill())
                     .build();
         }
     }

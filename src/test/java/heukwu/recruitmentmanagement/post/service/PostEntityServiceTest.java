@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,13 +60,13 @@ public class PostEntityServiceTest {
     void getAllPostTest() {
 
         //given
-        PostDto.Req dto = PostDto.Req.builder()
+        Post post = Post.builder()
                 .position("Back End")
                 .skill("Spring")
                 .description("Java Spring Back End")
                 .build();
 
-        List<PostEntity> postEntities = List.of(PostEntity.of(naver, dto), PostEntity.of(kakao, dto), PostEntity.of(line, dto));
+        List<PostEntity> postEntities = List.of(post.toEntity(naver), post.toEntity(kakao), post.toEntity(line));
         when(postRepository.findAll()).thenReturn(postEntities);
 
         //when
@@ -80,33 +81,44 @@ public class PostEntityServiceTest {
     void getPostTest() {
 
         //given
+        Company company = Company.builder()
+                .companyName("naver")
+                .build();
+
         PostEntity postEntity1 = PostEntity.builder()
                 .id(1L)
-                .company(naver)
+                .company(company)
+                .position("position")
+                .skill("skill")
+                .description("description")
                 .build();
 
         PostEntity postEntity2 = PostEntity.builder()
                 .id(2L)
-                .company(naver)
+                .company(company)
+                .position("position")
+                .skill("skill")
+                .description("description")
                 .build();
 
         PostEntity postEntity3 = PostEntity.builder()
                 .id(3L)
-                .company(naver)
+                .company(company)
+                .position("position")
+                .skill("skill")
+                .description("description")
                 .build();
 
-        Company company = Company.builder()
-                .companyName("naver")
-                .postEntityList(List.of(postEntity1, postEntity2, postEntity3))
-                .build();
+        company.setPostEntityList(Arrays.asList(postEntity1, postEntity2, postEntity3));
 
-        when(postRepository.findById(1L)).thenReturn(Optional.of(PostEntity.builder().id(1L).company(company).build()));
+        when(postRepository.findById(1L)).thenReturn(Optional.of(postEntity1));
 
         //when
-        PostDto.Res post = postService.getPost(1L);
+        PostWithOtherPosts post = postService.getPost(1L);
 
         //then
-        assertThat(post.getPostList()).isEqualTo(List.of(2L, 3L));
+        List<Long> otherPostIds = post.otherPosts().stream().map(Post::id).toList();
+        assertThat(otherPostIds).contains(2L, 3L);
     }
 
     @Test
@@ -129,16 +141,16 @@ public class PostEntityServiceTest {
         when(postRepository.save(any(PostEntity.class))).thenAnswer(i -> i.getArguments()[0]);
 
         //when
-        PostDto.Req dto = PostDto.Req.builder()
+        Post post = Post.builder()
                 .position("Back End")
                 .skill("Spring")
                 .description("Java Spring Back End")
                 .build();
 
-        PostDto.Res post = postService.createPost(1L, dto);
+        Post createdPost = postService.createPost(1L, post);
 
         //then
-        assertThat(post.getSkill()).isEqualTo(dto.getSkill());
+        assertThat(createdPost.skill()).isEqualTo(post.skill());
     }
 
     @Test
@@ -149,12 +161,12 @@ public class PostEntityServiceTest {
         when(companyRepository.findById(4L)).thenReturn(Optional.empty());
 
         //when, then
-        PostDto.Req dto = PostDto.Req.builder()
+        Post post = Post.builder()
                 .position("Back End")
                 .skill("Spring")
                 .description("Java Spring Back End")
                 .build();
 
-        assertThatThrownBy(() -> postService.createPost(4L, dto)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> postService.createPost(4L, post)).isInstanceOf(IllegalArgumentException.class);
     }
 }
