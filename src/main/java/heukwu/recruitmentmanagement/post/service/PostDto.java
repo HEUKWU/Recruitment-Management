@@ -1,6 +1,5 @@
 package heukwu.recruitmentmanagement.post.service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import heukwu.recruitmentmanagement.post.repository.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,9 +30,7 @@ public class PostDto {
         private String companyName;
         private String position;
         private String skill;
-        @JsonInclude(JsonInclude.Include.NON_NULL)
         private String description;
-        @JsonInclude(JsonInclude.Include.NON_NULL)
 
         private List<Long> postList;
 
