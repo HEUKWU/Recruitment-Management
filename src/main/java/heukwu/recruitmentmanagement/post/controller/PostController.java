@@ -1,7 +1,7 @@
-package heukwu.recruitmentmanagement.controller;
+package heukwu.recruitmentmanagement.post.controller;
 
-import heukwu.recruitmentmanagement.dto.PostDto;
-import heukwu.recruitmentmanagement.service.PostService;
+import heukwu.recruitmentmanagement.post.service.PostDto;
+import heukwu.recruitmentmanagement.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

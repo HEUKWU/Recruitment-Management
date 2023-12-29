@@ -1,6 +1,8 @@
-package heukwu.recruitmentmanagement.entity;
+package heukwu.recruitmentmanagement.post.repository;
 
-import heukwu.recruitmentmanagement.dto.PostDto;
+import heukwu.recruitmentmanagement.post.service.PostDto;
+import heukwu.recruitmentmanagement.apply.repository.Apply;
+import heukwu.recruitmentmanagement.company.repository.Company;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

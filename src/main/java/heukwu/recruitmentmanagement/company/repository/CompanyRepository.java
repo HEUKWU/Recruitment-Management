@@ -1,6 +1,5 @@
-package heukwu.recruitmentmanagement.repository;
+package heukwu.recruitmentmanagement.company.repository;
 
-import heukwu.recruitmentmanagement.entity.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {

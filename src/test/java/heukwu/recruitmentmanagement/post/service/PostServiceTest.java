@@ -1,10 +1,11 @@
-package heukwu.recruitmentmanagement.service;
+package heukwu.recruitmentmanagement.post.service;
 
-import heukwu.recruitmentmanagement.dto.PostDto;
-import heukwu.recruitmentmanagement.entity.Company;
-import heukwu.recruitmentmanagement.entity.Post;
-import heukwu.recruitmentmanagement.repository.CompanyRepository;
-import heukwu.recruitmentmanagement.repository.PostRepository;
+import heukwu.recruitmentmanagement.post.service.PostDto;
+import heukwu.recruitmentmanagement.company.repository.Company;
+import heukwu.recruitmentmanagement.post.repository.Post;
+import heukwu.recruitmentmanagement.post.service.PostService;
+import heukwu.recruitmentmanagement.company.repository.CompanyRepository;
+import heukwu.recruitmentmanagement.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

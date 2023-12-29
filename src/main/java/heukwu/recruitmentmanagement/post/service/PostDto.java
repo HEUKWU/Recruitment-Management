@@ -1,7 +1,7 @@
-package heukwu.recruitmentmanagement.dto;
+package heukwu.recruitmentmanagement.post.service;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import heukwu.recruitmentmanagement.entity.Post;
+import heukwu.recruitmentmanagement.post.repository.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

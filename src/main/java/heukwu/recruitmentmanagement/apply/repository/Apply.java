@@ -1,5 +1,7 @@
-package heukwu.recruitmentmanagement.entity;
+package heukwu.recruitmentmanagement.apply.repository;
 
+import heukwu.recruitmentmanagement.user.repository.User;
+import heukwu.recruitmentmanagement.post.repository.Post;
 import jakarta.persistence.*;
 
 @Entity
