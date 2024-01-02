@@ -1,6 +1,5 @@
 package heukwu.recruitmentmanagement.user.repository;
 
-import heukwu.recruitmentmanagement.apply.repository.Apply;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -18,6 +17,7 @@ public class User {
     @Column(nullable = false)
     private String username;
 
-    @OneToMany(mappedBy = "user")
-    private List<Apply> applyList;
+    @ElementCollection
+    @CollectionTable(name = "applyIds", joinColumns = @JoinColumn(name = "userId", referencedColumnName = "id"))
+    private List<Long> applyIds;
 }

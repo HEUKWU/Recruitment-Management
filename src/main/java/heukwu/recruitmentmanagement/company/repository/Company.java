@@ -1,12 +1,11 @@
 package heukwu.recruitmentmanagement.company.repository;
 
-import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Setter
 @Entity
 @Getter
 @NoArgsConstructor
@@ -27,6 +26,15 @@ public class Company {
     @Column(nullable = false)
     private String location;
 
-    @OneToMany(mappedBy = "company")
-    private List<PostEntity> postEntityList;
+    @ElementCollection
+    @CollectionTable(name = "postIds", joinColumns = @JoinColumn(name = "companyId", referencedColumnName = "id"))
+    private List<Long> postIds = new ArrayList<>();
+
+    public void add(Long postId) {
+        postIds.add(postId);
+    }
+
+    public void removePost(Long postId) {
+        postIds.remove(postId);
+    }
 }

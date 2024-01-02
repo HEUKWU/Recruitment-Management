@@ -12,7 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,16 +42,19 @@ public class PostEntityServiceTest {
         naver = Company.builder()
                 .id(1L)
                 .companyName("NAVER")
+                .postIds(new ArrayList<>())
                 .build();
 
         kakao = Company.builder()
                 .id(2L)
                 .companyName("KAKAO")
+                .postIds(new ArrayList<>())
                 .build();
 
         line = Company.builder()
                 .id(3L)
                 .companyName("LINE")
+                .postIds(new ArrayList<>())
                 .build();
     }
 
@@ -66,8 +69,11 @@ public class PostEntityServiceTest {
                 .description("Java Spring Back End")
                 .build();
 
-        List<PostEntity> postEntities = List.of(post.toEntity(naver), post.toEntity(kakao), post.toEntity(line));
+        List<PostEntity> postEntities = List.of(post.toEntity(naver.getId()), post.toEntity(kakao.getId()), post.toEntity(line.getId()));
         when(postRepository.findAll()).thenReturn(postEntities);
+        when(companyRepository.findById(1L)).thenReturn(Optional.ofNullable(naver));
+        when(companyRepository.findById(2L)).thenReturn(Optional.ofNullable(kakao));
+        when(companyRepository.findById(3L)).thenReturn(Optional.ofNullable(line));
 
         //when
         List<Post> allPost = postService.getAllPost();
@@ -82,43 +88,27 @@ public class PostEntityServiceTest {
 
         //given
         Company company = Company.builder()
+                .id(1L)
                 .companyName("naver")
+                .postIds(List.of(1L, 2L, 3L))
                 .build();
 
         PostEntity postEntity1 = PostEntity.builder()
                 .id(1L)
-                .company(company)
+                .companyId(company.getId())
                 .position("position")
                 .skill("skill")
                 .description("description")
                 .build();
-
-        PostEntity postEntity2 = PostEntity.builder()
-                .id(2L)
-                .company(company)
-                .position("position")
-                .skill("skill")
-                .description("description")
-                .build();
-
-        PostEntity postEntity3 = PostEntity.builder()
-                .id(3L)
-                .company(company)
-                .position("position")
-                .skill("skill")
-                .description("description")
-                .build();
-
-        company.setPostEntityList(Arrays.asList(postEntity1, postEntity2, postEntity3));
 
         when(postRepository.findById(1L)).thenReturn(Optional.of(postEntity1));
+        when(companyRepository.findById(1L)).thenReturn(Optional.of(company));
 
         //when
         PostWithOtherPosts post = postService.getPost(1L);
 
         //then
-        List<Long> otherPostIds = post.otherPosts().stream().map(Post::id).toList();
-        assertThat(otherPostIds).contains(2L, 3L);
+        assertThat(post.otherPostIds()).contains(2L, 3L);
     }
 
     @Test

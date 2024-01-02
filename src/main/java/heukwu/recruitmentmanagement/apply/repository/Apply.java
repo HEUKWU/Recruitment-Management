@@ -1,8 +1,9 @@
 package heukwu.recruitmentmanagement.apply.repository;
 
-import heukwu.recruitmentmanagement.user.repository.User;
-import heukwu.recruitmentmanagement.post.repository.PostEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 @Entity
 public class Apply {
@@ -11,9 +12,7 @@ public class Apply {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private PostEntity postEntity;
+    private Long postId;
 
-    @ManyToOne
-    private User user;
+    private Long userId;
 }

@@ -1,7 +1,5 @@
 package heukwu.recruitmentmanagement.post.repository;
 
-import heukwu.recruitmentmanagement.apply.repository.Apply;
-import heukwu.recruitmentmanagement.company.repository.Company;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,19 +32,19 @@ public class PostEntity {
 
     private Boolean deleted = Boolean.FALSE;
 
-    @ManyToOne
-    private Company company;
+    private Long companyId;
 
-    @OneToMany
-    private List<Apply> applyList;
+    @ElementCollection
+    @CollectionTable(name = "applyIds", joinColumns = @JoinColumn(name = "postId", referencedColumnName = "id"))
+    private List<Long> applyIds;
 
     @Builder
-    public PostEntity(Long id, String position, String skill, String description, Company company) {
+    public PostEntity(Long id, String position, String skill, String description, Long companyId) {
         this.id = id;
         this.position = position;
         this.skill = skill;
         this.description = description;
-        this.company = company;
+        this.companyId = companyId;
     }
 
     public PostEntity edit(PostEntityUpdatePolicy updatePolicy) {
