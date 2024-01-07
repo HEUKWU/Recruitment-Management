@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import java.util.List;
-
 @Entity
 @Getter
 @NoArgsConstructor
@@ -33,10 +31,6 @@ public class PostEntity {
     private Boolean deleted = Boolean.FALSE;
 
     private Long companyId;
-
-    @ElementCollection
-    @CollectionTable(name = "applyIds", joinColumns = @JoinColumn(name = "postId", referencedColumnName = "id"))
-    private List<Long> applyIds;
 
     @Builder
     public PostEntity(Long id, String position, String skill, String description, Long companyId) {
