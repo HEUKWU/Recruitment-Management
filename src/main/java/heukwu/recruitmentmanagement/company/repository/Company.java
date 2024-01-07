@@ -1,12 +1,11 @@
 package heukwu.recruitmentmanagement.company.repository;
 
-import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.util.List;
-
-@Setter
 @Entity
 @Getter
 @NoArgsConstructor
@@ -26,7 +25,4 @@ public class Company {
 
     @Column(nullable = false)
     private String location;
-
-    @OneToMany(mappedBy = "company")
-    private List<PostEntity> postEntityList;
 }

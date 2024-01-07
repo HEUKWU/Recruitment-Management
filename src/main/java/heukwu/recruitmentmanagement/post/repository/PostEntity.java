@@ -1,15 +1,11 @@
 package heukwu.recruitmentmanagement.post.repository;
 
-import heukwu.recruitmentmanagement.apply.repository.Apply;
-import heukwu.recruitmentmanagement.company.repository.Company;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -34,19 +30,15 @@ public class PostEntity {
 
     private Boolean deleted = Boolean.FALSE;
 
-    @ManyToOne
-    private Company company;
-
-    @OneToMany
-    private List<Apply> applyList;
+    private Long companyId;
 
     @Builder
-    public PostEntity(Long id, String position, String skill, String description, Company company) {
+    public PostEntity(Long id, String position, String skill, String description, Long companyId) {
         this.id = id;
         this.position = position;
         this.skill = skill;
         this.description = description;
-        this.company = company;
+        this.companyId = companyId;
     }
 
     public PostEntity edit(PostEntityUpdatePolicy updatePolicy) {

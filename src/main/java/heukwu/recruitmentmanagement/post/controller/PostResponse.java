@@ -19,7 +19,7 @@ class PostResponse {
         static Create from(Post post) {
             return Create.builder()
                     .id(post.id())
-                    .companyName(post.company().getCompanyName())
+                    .companyName(post.companyName())
                     .position(post.position())
                     .skill(post.skill())
                     .description(post.description())
@@ -38,7 +38,7 @@ class PostResponse {
         static Edit from(Post post) {
             return Edit.builder()
                     .id(post.id())
-                    .companyName(post.company().getCompanyName())
+                    .companyName(post.companyName())
                     .position(post.position())
                     .skill(post.skill())
                     .description(post.description())
@@ -56,15 +56,13 @@ class PostResponse {
             List<Long> otherPostIds
     ) {
         static Get from(PostWithOtherPosts post) {
-            List<Long> otherPostIds = post.otherPosts().stream().map(Post::id).toList();
-
             return Get.builder()
                     .id(post.id())
-                    .companyName(post.company().getCompanyName())
+                    .companyName(post.companyName())
                     .position(post.position())
                     .skill(post.skill())
                     .description(post.description())
-                    .otherPostIds(otherPostIds)
+                    .otherPostIds(post.otherPostIds())
                     .build();
         }
     }
@@ -79,7 +77,7 @@ class PostResponse {
         static GetList from(Post post) {
             return GetList.builder()
                     .id(post.id())
-                    .companyName(post.company().getCompanyName())
+                    .companyName(post.companyName())
                     .position(post.position())
                     .skill(post.skill())
                     .build();
