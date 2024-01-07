@@ -42,19 +42,16 @@ public class PostEntityServiceTest {
         naver = Company.builder()
                 .id(1L)
                 .companyName("NAVER")
-                .postIds(new ArrayList<>())
                 .build();
 
         kakao = Company.builder()
                 .id(2L)
                 .companyName("KAKAO")
-                .postIds(new ArrayList<>())
                 .build();
 
         line = Company.builder()
                 .id(3L)
                 .companyName("LINE")
-                .postIds(new ArrayList<>())
                 .build();
     }
 
@@ -90,7 +87,6 @@ public class PostEntityServiceTest {
         Company company = Company.builder()
                 .id(1L)
                 .companyName("naver")
-                .postIds(List.of(1L, 2L, 3L))
                 .build();
 
         PostEntity postEntity1 = PostEntity.builder()
@@ -101,8 +97,25 @@ public class PostEntityServiceTest {
                 .description("description")
                 .build();
 
+        PostEntity postEntity2 = PostEntity.builder()
+                .id(2L)
+                .companyId(company.getId())
+                .position("position")
+                .skill("skill")
+                .description("description")
+                .build();
+
+        PostEntity postEntity3 = PostEntity.builder()
+                .id(3L)
+                .companyId(company.getId())
+                .position("position")
+                .skill("skill")
+                .description("description")
+                .build();
+
         when(postRepository.findById(1L)).thenReturn(Optional.of(postEntity1));
         when(companyRepository.findById(1L)).thenReturn(Optional.of(company));
+        when(postRepository.findAllByCompanyId(company.getId())).thenReturn(List.of(postEntity1, postEntity2, postEntity3));
 
         //when
         PostWithOtherPosts post = postService.getPost(1L);

@@ -19,11 +19,7 @@ public record PostWithOtherPosts(
         List<Long> otherPostIds
 ) {
 
-    static PostWithOtherPosts from(PostEntity postEntity, Company company) {
-        List<Long> otherPostIds = company.getPostIds().stream()
-                .filter(id -> !id.equals(postEntity.getId()))
-                .toList();
-
+    static PostWithOtherPosts from(PostEntity postEntity, List<Long> otherPostIds, Company company) {
         return builder()
                 .id(postEntity.getId())
                 .companyName(company.getCompanyName())

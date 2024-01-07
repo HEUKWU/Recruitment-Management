@@ -1,10 +1,10 @@
 package heukwu.recruitmentmanagement.company.repository;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -25,16 +25,4 @@ public class Company {
 
     @Column(nullable = false)
     private String location;
-
-    @ElementCollection
-    @CollectionTable(name = "postIds", joinColumns = @JoinColumn(name = "companyId", referencedColumnName = "id"))
-    private List<Long> postIds = new ArrayList<>();
-
-    public void add(Long postId) {
-        postIds.add(postId);
-    }
-
-    public void removePost(Long postId) {
-        postIds.remove(postId);
-    }
 }

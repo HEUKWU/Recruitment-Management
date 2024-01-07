@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +30,14 @@ public class PostService {
     public PostWithOtherPosts getPost(Long postId) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
         Company company = companyRepository.findById(postEntity.getCompanyId()).orElseThrow(IllegalArgumentException::new);
+        List<PostEntity> postEntities = postRepository.findAllByCompanyId(postEntity.getCompanyId());
 
-        return PostWithOtherPosts.from(postEntity, company);
+        List<Long> otherPostIds = postEntities.stream()
+                .map(PostEntity::getId)
+                .filter(id -> !id.equals(postEntity.getId()))
+                .collect(Collectors.toList());
+
+        return PostWithOtherPosts.from(postEntity, otherPostIds, company);
     }
 
     @Transactional
@@ -38,7 +45,6 @@ public class PostService {
         Company company = companyRepository.findById(companyId).orElseThrow(IllegalArgumentException::new);
         PostEntity postEntity = post.toEntity(companyId);
         postRepository.save(postEntity);
-        company.add(postEntity.getId());
 
         return Post.from(postEntity, company.getCompanyName());
     }
@@ -60,9 +66,6 @@ public class PostService {
     @Transactional
     public void deletePost(Long postId) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
-        Company company = companyRepository.findById(postEntity.getCompanyId()).orElseThrow(IllegalArgumentException::new);
-        company.removePost(postId);
-
         postRepository.delete(postEntity);
     }
 }
