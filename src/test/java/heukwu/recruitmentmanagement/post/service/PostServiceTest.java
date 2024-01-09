@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class PostEntityServiceTest {
+public class PostServiceTest {
 
     @Mock
     private CompanyRepository companyRepository;
