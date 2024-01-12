@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,9 +52,10 @@ class ApplyServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(postRepository.findById(1L)).thenReturn(Optional.of(post));
         when(applyRepository.findApplyByUserIdAndPostId(1L, 1L)).thenReturn(Optional.empty());
+        when(applyRepository.save(any(ApplyEntity.class))).thenAnswer(i -> i.getArguments()[0]);
 
         //when
-        Apply apply = applyService.apply(1L, 1L);
+        Apply apply = applyService.apply(Apply.builder().userId(1L).postId(1L).build());
 
         //then
         assertThat(apply.userId()).isEqualTo(user.getId());
@@ -79,6 +81,6 @@ class ApplyServiceTest {
         when(applyRepository.findApplyByUserIdAndPostId(1L, 1L)).thenReturn(Optional.of(ApplyEntity.builder().userId(1L).postId(1L).build()));
 
         //when, then
-        assertThatThrownBy(() -> applyService.apply(1L, 1L)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> applyService.apply(Apply.builder().userId(1L).postId(1L).build())).isInstanceOf(IllegalArgumentException.class);
     }
 }

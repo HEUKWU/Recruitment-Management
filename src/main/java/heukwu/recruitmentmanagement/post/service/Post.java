@@ -12,7 +12,7 @@ public record Post(
         @NonNull String skill,
         @NonNull String description,
         boolean deleted,
-        Long companyId
+        long companyId
 ) {
     static Post from(PostEntity postEntity, String companyName) {
         return builder()

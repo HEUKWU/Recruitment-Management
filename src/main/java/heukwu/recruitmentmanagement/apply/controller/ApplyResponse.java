@@ -7,9 +7,9 @@ public class ApplyResponse {
 
     @Builder
     record Create(
-            Long id,
-            Long userId,
-            Long postId
+            long id,
+            long userId,
+            long postId
     ) {
         static Create from(Apply apply) {
             return Create.builder()

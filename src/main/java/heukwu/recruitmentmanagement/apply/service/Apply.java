@@ -6,8 +6,8 @@ import lombok.Builder;
 @Builder
 public record Apply(
         Long id,
-        Long postId,
-        Long userId
+        long postId,
+        long userId
 ) {
 
     public static Apply from(ApplyEntity applyEntity) {
@@ -19,7 +19,7 @@ public record Apply(
 
     }
 
-    public static ApplyEntity toEntity(Long postId, Long userId) {
+    public ApplyEntity toEntity() {
         return ApplyEntity.builder()
                 .postId(postId)
                 .userId(userId)

@@ -19,17 +19,16 @@ public class ApplyService {
     private final PostRepository postRepository;
     private final ApplyRepository applyRepository;
 
-    public Apply apply(Long userId, Long postId) {
-        User user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
-        PostEntity postEntity = postRepository.findById(postId).orElseThrow(IllegalArgumentException::new);
+    public Apply apply(Apply requestDto) {
+        User user = userRepository.findById(requestDto.userId()).orElseThrow(IllegalArgumentException::new);
+        PostEntity postEntity = postRepository.findById(requestDto.postId()).orElseThrow(IllegalArgumentException::new);
 
-        Optional<ApplyEntity> applyByUserIdAndPostId = applyRepository.findApplyByUserIdAndPostId(user.getId(), postEntity.getId());
-        if (applyByUserIdAndPostId.isPresent()) {
+        Optional<ApplyEntity> existApply = applyRepository.findApplyByUserIdAndPostId(user.getId(), postEntity.getId());
+        if (existApply.isPresent()) {
             throw new IllegalArgumentException();
         }
 
-        ApplyEntity applyEntity = Apply.toEntity(postId, userId);
-        applyRepository.save(applyEntity);
+        ApplyEntity applyEntity = applyRepository.save(requestDto.toEntity());
 
         return Apply.from(applyEntity);
     }
