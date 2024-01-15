@@ -2,6 +2,8 @@ package heukwu.recruitmentmanagement.post.service;
 
 import heukwu.recruitmentmanagement.company.repository.Company;
 import heukwu.recruitmentmanagement.company.repository.CompanyRepository;
+import heukwu.recruitmentmanagement.exception.NotFoundCompanyException;
+import heukwu.recruitmentmanagement.exception.NotFoundPostException;
 import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import heukwu.recruitmentmanagement.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -131,7 +133,7 @@ public class PostServiceTest {
         when(postRepository.findById(1L)).thenReturn(Optional.empty());
 
         //when, then
-        assertThatThrownBy(() -> postService.getPost(1L)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> postService.getPost(1L)).isInstanceOf(NotFoundPostException.class);
     }
 
     @Test
@@ -169,6 +171,6 @@ public class PostServiceTest {
                 .description("Java Spring Back End")
                 .build();
 
-        assertThatThrownBy(() -> postService.createPost(4L, post)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> postService.createPost(4L, post)).isInstanceOf(NotFoundCompanyException.class);
     }
 }
