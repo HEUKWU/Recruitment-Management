@@ -2,6 +2,7 @@ package heukwu.recruitmentmanagement.apply.service;
 
 import heukwu.recruitmentmanagement.apply.repository.ApplyEntity;
 import heukwu.recruitmentmanagement.apply.repository.ApplyRepository;
+import heukwu.recruitmentmanagement.exception.BusinessException;
 import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import heukwu.recruitmentmanagement.post.repository.PostRepository;
 import heukwu.recruitmentmanagement.user.repository.User;
@@ -81,6 +82,6 @@ class ApplyServiceTest {
         when(applyRepository.findApplyByUserIdAndPostId(1L, 1L)).thenReturn(Optional.of(ApplyEntity.builder().userId(1L).postId(1L).build()));
 
         //when, then
-        assertThatThrownBy(() -> applyService.apply(Apply.builder().userId(1L).postId(1L).build())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> applyService.apply(Apply.builder().userId(1L).postId(1L).build())).isInstanceOf(BusinessException.class).hasMessageContaining("이미 지원한 공고입니다.");
     }
 }

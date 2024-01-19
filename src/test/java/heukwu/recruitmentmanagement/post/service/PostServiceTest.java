@@ -2,6 +2,7 @@ package heukwu.recruitmentmanagement.post.service;
 
 import heukwu.recruitmentmanagement.company.repository.Company;
 import heukwu.recruitmentmanagement.company.repository.CompanyRepository;
+import heukwu.recruitmentmanagement.exception.NotFoundException;
 import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import heukwu.recruitmentmanagement.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -131,7 +132,7 @@ public class PostServiceTest {
         when(postRepository.findById(1L)).thenReturn(Optional.empty());
 
         //when, then
-        assertThatThrownBy(() -> postService.getPost(1L)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> postService.getPost(1L)).isInstanceOf(NotFoundException.class).hasMessageContaining("공고를 찾을 수 없습니다.");
     }
 
     @Test
@@ -169,6 +170,6 @@ public class PostServiceTest {
                 .description("Java Spring Back End")
                 .build();
 
-        assertThatThrownBy(() -> postService.createPost(4L, post)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> postService.createPost(4L, post)).isInstanceOf(NotFoundException.class).hasMessageContaining("회사를 찾을 수 없습니다.");
     }
 }
