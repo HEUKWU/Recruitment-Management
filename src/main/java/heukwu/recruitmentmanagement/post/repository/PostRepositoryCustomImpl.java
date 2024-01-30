@@ -3,6 +3,7 @@ package heukwu.recruitmentmanagement.post.repository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import heukwu.recruitmentmanagement.post.controller.PostSearch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +23,8 @@ public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implemen
     }
 
     @Override
-    public Page<PostEntity> findBySearchOption(Pageable pageable, String position, String skill) {
-        JPAQuery<PostEntity> query = jpaQueryFactory.selectFrom(postEntity).where(containPosition(position), containSkill(skill));
+    public Page<PostEntity> findBySearchOption(Pageable pageable, PostSearch search) {
+        JPAQuery<PostEntity> query = jpaQueryFactory.selectFrom(postEntity).where(containPosition(search.position()), containSkill(search.skill()));
         List<PostEntity> postEntities = getQuerydsl().applyPagination(pageable, query).fetch();
 
         return new PageImpl<>(postEntities, pageable, query.stream().count());

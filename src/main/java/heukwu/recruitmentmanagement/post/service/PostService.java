@@ -4,6 +4,7 @@ import heukwu.recruitmentmanagement.company.repository.Company;
 import heukwu.recruitmentmanagement.company.repository.CompanyRepository;
 import heukwu.recruitmentmanagement.exception.ErrorMessage;
 import heukwu.recruitmentmanagement.exception.NotFoundException;
+import heukwu.recruitmentmanagement.post.controller.PostSearch;
 import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import heukwu.recruitmentmanagement.post.repository.PostEntityUpdatePolicy;
 import heukwu.recruitmentmanagement.post.repository.PostRepository;
@@ -23,8 +24,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final CompanyRepository companyRepository;
 
-    public List<Post> getAllPost(String position, String skill, int page, int size) {
-        Page<PostEntity> postPage = postRepository.findBySearchOption(PageRequest.of(page, size), position, skill);
+    public List<Post> getAllPost(PostSearch search, int page, int size) {
+        Page<PostEntity> postPage = postRepository.findBySearchOption(PageRequest.of(page, size), search);
 
         return postPage.stream()
                 .map(i -> Post.from(i, companyRepository.findById(i.getCompanyId()).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_COMPANY)).getCompanyName()))

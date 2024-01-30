@@ -3,6 +3,7 @@ package heukwu.recruitmentmanagement.post.service;
 import heukwu.recruitmentmanagement.company.repository.Company;
 import heukwu.recruitmentmanagement.company.repository.CompanyRepository;
 import heukwu.recruitmentmanagement.exception.NotFoundException;
+import heukwu.recruitmentmanagement.post.controller.PostSearch;
 import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import heukwu.recruitmentmanagement.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,15 +70,16 @@ public class PostServiceTest {
                 .build();
 
         PageRequest pageRequest = PageRequest.of(0, 10);
+        PostSearch search = new PostSearch(null, null);
 
         List<PostEntity> postEntities = List.of(post.toEntity(naver.getId()), post.toEntity(kakao.getId()), post.toEntity(line.getId()));
         when(companyRepository.findById(1L)).thenReturn(Optional.ofNullable(naver));
         when(companyRepository.findById(2L)).thenReturn(Optional.ofNullable(kakao));
         when(companyRepository.findById(3L)).thenReturn(Optional.ofNullable(line));
-        when(postRepository.findBySearchOption(pageRequest, null, null)).thenReturn(new PageImpl<>(postEntities));
+        when(postRepository.findBySearchOption(pageRequest, search)).thenReturn(new PageImpl<>(postEntities));
 
         //when
-        List<Post> allPost = postService.getAllPost(null, null, pageRequest.getPageNumber(), pageRequest.getPageSize());
+        List<Post> allPost = postService.getAllPost(search, pageRequest.getPageNumber(), pageRequest.getPageSize());
 
         //then
         assertThat(allPost.size()).isEqualTo(3);
