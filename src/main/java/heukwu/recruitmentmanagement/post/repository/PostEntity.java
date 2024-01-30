@@ -1,6 +1,6 @@
 package heukwu.recruitmentmanagement.post.repository;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
