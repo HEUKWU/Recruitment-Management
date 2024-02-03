@@ -16,8 +16,8 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/post")
-    public List<PostResponse.GetList> getAllPost(@RequestParam String position, @RequestParam String skill, @RequestParam int page, @RequestParam int size) {
-        List<Post> postList = postService.getAllPost(position, skill, page - 1, size);
+    public List<PostResponse.GetList> getAllPost(@RequestParam(required = false) PostSearch search, @RequestParam int page, @RequestParam int size) {
+        List<Post> postList = postService.getAllPost(search, page - 1, size);
 
         return postList.stream()
                 .map(PostResponse.GetList::from)
