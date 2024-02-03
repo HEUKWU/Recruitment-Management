@@ -3,6 +3,7 @@ package heukwu.recruitmentmanagement.post.service;
 import heukwu.recruitmentmanagement.company.repository.Company;
 import heukwu.recruitmentmanagement.company.repository.CompanyRepository;
 import heukwu.recruitmentmanagement.exception.NotFoundException;
+import heukwu.recruitmentmanagement.post.controller.PostSearch;
 import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import heukwu.recruitmentmanagement.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +59,7 @@ public class PostServiceTest {
     }
 
     @Test
-    @DisplayName("게시글 전체조회시 응답된 리스트의 개수는 저장한 게시글의 개수와 같다.")
+    @DisplayName("검색어를 입력하지 않고 게시글 전체조회시 응답된 리스트의 개수는 저장한 게시글의 개수와 같다.")
     void getAllPostTest() {
 
         //given
@@ -66,14 +69,17 @@ public class PostServiceTest {
                 .description("Java Spring Back End")
                 .build();
 
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        PostSearch search = new PostSearch(null, null);
+
         List<PostEntity> postEntities = List.of(post.toEntity(naver.getId()), post.toEntity(kakao.getId()), post.toEntity(line.getId()));
-        when(postRepository.findAll()).thenReturn(postEntities);
         when(companyRepository.findById(1L)).thenReturn(Optional.ofNullable(naver));
         when(companyRepository.findById(2L)).thenReturn(Optional.ofNullable(kakao));
         when(companyRepository.findById(3L)).thenReturn(Optional.ofNullable(line));
+        when(postRepository.findBySearchOption(pageRequest, search)).thenReturn(new PageImpl<>(postEntities));
 
         //when
-        List<Post> allPost = postService.getAllPost();
+        List<Post> allPost = postService.getAllPost(search, pageRequest.getPageNumber(), pageRequest.getPageSize());
 
         //then
         assertThat(allPost.size()).isEqualTo(3);
