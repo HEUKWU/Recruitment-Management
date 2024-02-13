@@ -4,6 +4,7 @@ import heukwu.recruitmentmanagement.post.service.Post;
 import heukwu.recruitmentmanagement.post.service.PostService;
 import heukwu.recruitmentmanagement.post.service.PostWithOtherPosts;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,13 +12,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class PostController {
 
     private final PostService postService;
 
     @GetMapping("/post")
-    public List<PostResponse.GetList> getAllPost(@RequestParam(required = false) PostSearch search, @RequestParam int page, @RequestParam int size) {
-        List<Post> postList = postService.getAllPost(search, page - 1, size);
+    public List<PostResponse.GetList> getAllPost(PostSearch search, @RequestParam int size, Long cursorId) {
+        List<Post> postList = postService.getAllPost(search, size, cursorId);
 
         return postList.stream()
                 .map(PostResponse.GetList::from)
