@@ -3,7 +3,6 @@ package heukwu.recruitmentmanagement.post.service;
 import heukwu.recruitmentmanagement.company.repository.Company;
 import heukwu.recruitmentmanagement.company.repository.CompanyRepository;
 import heukwu.recruitmentmanagement.exception.NotFoundException;
-import heukwu.recruitmentmanagement.post.controller.PostSearch;
 import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import heukwu.recruitmentmanagement.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,8 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -69,17 +69,16 @@ public class PostServiceTest {
                 .description("Java Spring Back End")
                 .build();
 
-        PageRequest pageRequest = PageRequest.of(0, 10);
-        PostSearch search = new PostSearch(null, null);
-
         List<PostEntity> postEntities = List.of(post.toEntity(naver.getId()), post.toEntity(kakao.getId()), post.toEntity(line.getId()));
         when(companyRepository.findById(1L)).thenReturn(Optional.ofNullable(naver));
         when(companyRepository.findById(2L)).thenReturn(Optional.ofNullable(kakao));
         when(companyRepository.findById(3L)).thenReturn(Optional.ofNullable(line));
-        when(postRepository.findBySearchOption(pageRequest, search)).thenReturn(new PageImpl<>(postEntities));
+
+        Slice<PostEntity> postEntitySlice = new SliceImpl<>(postEntities, PageRequest.ofSize(3), false);
+        when(postRepository.findBySearchOption(1L, null, PageRequest.ofSize(3))).thenReturn(postEntitySlice);
 
         //when
-        List<Post> allPost = postService.getAllPost(search, pageRequest.getPageNumber(), pageRequest.getPageSize());
+        List<Post> allPost = postService.getAllPost(null, 3, 1L);
 
         //then
         assertThat(allPost.size()).isEqualTo(3);

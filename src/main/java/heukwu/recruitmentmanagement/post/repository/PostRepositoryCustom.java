@@ -1,9 +1,9 @@
 package heukwu.recruitmentmanagement.post.repository;
 
 import heukwu.recruitmentmanagement.post.controller.PostSearch;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 public interface PostRepositoryCustom {
-    Page<PostEntity> findBySearchOption(Pageable pageable, PostSearch search);
+    Slice<PostEntity> findBySearchOption(Long cursorId, PostSearch search, Pageable pageable);
 }

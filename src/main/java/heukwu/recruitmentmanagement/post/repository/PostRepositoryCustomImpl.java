@@ -1,48 +1,66 @@
 package heukwu.recruitmentmanagement.post.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import heukwu.recruitmentmanagement.post.controller.PostSearch;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
 
 import static heukwu.recruitmentmanagement.post.repository.QPostEntity.postEntity;
 
-public class PostRepositoryCustomImpl extends QuerydslRepositorySupport implements PostRepositoryCustom {
+@RequiredArgsConstructor
+public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public PostRepositoryCustomImpl(JPAQueryFactory jpaQueryFactory) {
-        super(PostEntity.class);
-        this.jpaQueryFactory = jpaQueryFactory;
-    }
-
     @Override
-    public Page<PostEntity> findBySearchOption(Pageable pageable, PostSearch search) {
-        JPAQuery<PostEntity> query = jpaQueryFactory.selectFrom(postEntity).where(containPosition(search.position()), containSkill(search.skill()));
-        List<PostEntity> postEntities = getQuerydsl().applyPagination(pageable, query).fetch();
+    public Slice<PostEntity> findBySearchOption(Long cursorId, PostSearch search, Pageable pageable) {
+        List<Long> ids = jpaQueryFactory
+                .select(postEntity.id)
+                .from(postEntity)
+                .where(containPosition(search), containSkill(search), eqCursorId(cursorId))
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
 
-        return new PageImpl<>(postEntities, pageable, query.stream().count());
+        List<PostEntity> postEntities = jpaQueryFactory.selectFrom(postEntity)
+                .where(postEntity.id.in(ids))
+                .fetch();
+
+        boolean hasNext = false;
+        if (postEntities.size() > pageable.getPageSize()) {
+            postEntities.remove(pageable.getPageSize());
+
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(postEntities, pageable, hasNext);
     }
 
-    private BooleanExpression containPosition(String position) {
-        if (position == null || position.isEmpty()) {
+    private BooleanExpression containPosition(PostSearch search) {
+        if (search == null || search.position() == null || search.position().isEmpty()) {
             return null;
         }
 
-        return postEntity.position.containsIgnoreCase(position);
+        return postEntity.position.containsIgnoreCase(search.position());
     }
 
-    private BooleanExpression containSkill(String skill) {
-        if (skill == null || skill.isEmpty()) {
+    private BooleanExpression containSkill(PostSearch search) {
+        if (search == null || search.skill() == null || search.skill().isEmpty()) {
             return null;
         }
 
-        return postEntity.skill.containsIgnoreCase(skill);
+        return postEntity.skill.containsIgnoreCase(search.skill());
+    }
+
+    private BooleanExpression eqCursorId(Long cursorId) {
+        if (cursorId == null) {
+            return null;
+        }
+
+        return postEntity.id.gt(cursorId);
     }
 }

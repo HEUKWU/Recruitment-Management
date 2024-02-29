@@ -9,8 +9,7 @@ import heukwu.recruitmentmanagement.post.repository.PostEntity;
 import heukwu.recruitmentmanagement.post.repository.PostEntityUpdatePolicy;
 import heukwu.recruitmentmanagement.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +23,10 @@ public class PostService {
     private final PostRepository postRepository;
     private final CompanyRepository companyRepository;
 
-    public List<Post> getAllPost(PostSearch search, int page, int size) {
-        Page<PostEntity> postPage = postRepository.findBySearchOption(PageRequest.of(page, size), search);
+    public List<Post> getAllPost(PostSearch search, int size, Long cursorId) {
+        Slice<PostEntity> postEntities = postRepository.findBySearchOption(cursorId, search, PageRequest.ofSize(size));
 
-        return postPage.stream()
+        return postEntities.stream()
                 .map(i -> Post.from(i, companyRepository.findById(i.getCompanyId()).orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_COMPANY)).getCompanyName()))
                 .toList();
     }
